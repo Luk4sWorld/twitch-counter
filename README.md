@@ -36,4 +36,19 @@ this evaluates to:
 ```
 
 and with a counter value of 3, this will display  
-![example image](/img/example.jpg)
+![example image](/img/example.jpg)  
+
+
+### Style Customisation
+
+Can be changed via OBS "Custom CSS" inside the Browser Source properties.  
+The DOM has the `message` class:  
+
+```css
+.message {
+    color: #F0F0F0;
+    font-family: Comic Sans MS, sans-serif;
+    font-size: 40px;
+    text-align: center;
+}
+```
