@@ -87,7 +87,7 @@
                         return console.log(`no permission: ${perm} > ${opts.perm}, for user "${tags.username}".`);
                     opts.value += 1;
                     updateScreen(opts.value);
-                    console.log("user ${tags.username} updated value to ${opts.value}");
+                    console.log(`user ${tags.username} updated value to ${opts.value}`);
                 });
             }
             window.onload = load;
