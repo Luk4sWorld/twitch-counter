@@ -35,5 +35,5 @@ this evaluates to:
 }
 ```
 
-and with a counter value of 3, this will display
+and with a counter value of 3, this will display  
 ![example image](/img/example.jpg)
