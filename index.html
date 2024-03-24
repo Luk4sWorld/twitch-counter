@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>counter</title>
+        <style type="text/css">
+            .message {
+                color: #F0F0F0;
+                font-family: Comic Sans MS, sans-serif;
+                font-size: 40px;
+                text-align: center;
+            }
+        </style>
+        <script src="tmi.min.js"></script>
+        <script>
+            const replaceVar = '{value}';
+            var twitchClient;
+            var text;
+            var opts = {
+                channel: "ch4tsworld",
+                command: "!count",
+                value: 0,
+                text: "Counter: {value}",
+                perm: 1,
+            };
+            /* permissions:
+                broadcaster: 0
+                moderator: 1
+                VIP: 2
+                sub: 3
+                everyone: 4+
+            */
+            function doErrorMSG(msg) {
+                text.innerText = "#ERROR: " + msg;
+                client.disconnect();
+            }
+            function getPermissionLevel(tags) {
+                let perm = Number.MAX_SAFE_INTEGER;
+                if(!tags.badges) return perm;
+                if(tags.badges.broadcaster) return 0;
+                if(tags.badges.moderator) return 1;
+                if(tags.badges.vip) return 2;
+                if(tags.badges.subscriber) return 3;
+                return perm;
+            }
+            function updateScreen() {
+                text.innerText = opts.text.replace(replaceVar, opts.value.toString());
+            }
+            function parseArgs(argsString, defaults) {
+                if(!defaults) return doErrorMSG("no default args")
+                argsString ||= window.location.hash.slice(1);
+                const topts = new URLSearchParams(argsString);
+                if(!topts.has("channel"))
+                    return doErrorMSG("no channel given!");
+                for(const key of Object.keys(opts)){
+                    if(!topts.has(key)) continue;
+                    const t = topts.get(key);
+                    if(!Number.isNaN(parseInt(defaults[key]))) {
+                        if(Number.isNaN(parseInt(t)))
+                            return doErrorMSG("invalid integer value: "+t);
+                        defaults[key] = parseInt(t);
+                        console.log("number", defaults[key]);
+                    } else {
+                        defaults[key] = t;
+                        console.log("string", defaults[key]);
+                    }
+                }
+                return defaults;
+            }
+            function load() {
+                let hashValue = window.location.hash.slice(1);
+                text = document.getElementById("text");
+                console.log("args:",parseArgs(hashValue, opts));
+                updateScreen();
+                client = new tmi.Client({channels:[opts.channel]});
+                client.connect()
+                    //.then(()=>console.log("connected channels:", client.getChannels().join(", ")))
+                    .catch(e=>{
+                        console.error(e);
+                        doErrorMSG(e);
+                    });
+                client.on('chat', (channel, tags, msg, self) => {
+                    const tmp = msg.split(' ')[0];
+                    if(tmp != opts.command) return console.log("no command found:",tmp);
+                    console.log(tags);
+                    const perm = getPermissionLevel(tags);
+                    if(perm > opts.perm)
+                        return console.log(`no permission: ${perm} > ${opts.perm}, for user "${tags.username}".`);
+                    opts.value += 1;
+                    updateScreen(opts.value);
+                    console.log("user ${tags.username} updated value to ${opts.value}");
+                });
+            }
+            window.onload = load;
+        </script>
+    </head>
+    <body>
+        <div>
+            <text id=text class="message"></text>
+        </div>
+    </body>
+</html
