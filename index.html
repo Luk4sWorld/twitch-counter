@@ -36,7 +36,7 @@
                 client.disconnect();
             }
             function getPermissionLevel(tags) {
-                let perm = Number.MAX_SAFE_INTEGER;
+                let perm = 4;
                 if(!tags.badges) return perm;
                 if(tags.badges.broadcaster) return 0;
                 if(tags.badges.moderator) return 1;
