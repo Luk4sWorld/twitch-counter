@@ -15,12 +15,14 @@
             const replaceVar = '{value}';
             var twitchClient;
             var text;
+            var nextUpdate = 0;
             var opts = {
                 channel: "ch4tsworld",
                 command: "!count",
                 value: 0,
                 text: "Counter: {value}",
                 perm: 1,
+                cooldown: 2000,
             };
             /* permissions:
                 broadcaster: 0
@@ -85,6 +87,10 @@
                     const perm = getPermissionLevel(tags);
                     if(perm > opts.perm)
                         return console.log(`no permission: ${perm} > ${opts.perm}, for user "${tags.username}".`);
+                    const t = Date.now();
+                    if(nextUpdate > t)
+                        return console.log(`skipped for ${tags.username}: still in cooldown`);
+                    nextUpdate = t + opts.cooldown;
                     opts.value += 1;
                     updateScreen(opts.value);
                     console.log(`user ${tags.username} updated value to ${opts.value}`);
