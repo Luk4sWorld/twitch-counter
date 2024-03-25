@@ -10,6 +10,7 @@ a little text page that counts up with each command executed
    * command: optional! the command that increases the counter, default: `!count`
    * text: optional! the text around the counter value, default: `Counter: {value}`
    * perm: optional! the permission level needed to increase the counter, default: `1`
+   * cooldown: optional! the time in milliseconds until next command is accepted, default: `2000` ms
 3. refresh your browser source to reset counter
 
 #### Permission values
@@ -31,7 +32,8 @@ this evaluates to:
   "command": "!death",
   "value": 0,
   "perm": 4,
-  "text": "Lukas died {value} times."
+  "text": "Lukas died {value} times.",
+  "cooldown": 2000
 }
 ```
 
